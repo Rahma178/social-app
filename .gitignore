@@ -1,4 +1,4 @@
 
 node_modules
-# config/*
-# !config/config.service.js
+config/*
+!config/config.service.js

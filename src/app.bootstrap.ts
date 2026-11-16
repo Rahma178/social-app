@@ -8,6 +8,7 @@ import { AppError, GlobalErrorHandling } from "./common/utilitis/globalErrorHand
 import authRouter from "./modules/auth/auth.controller";
 import ConnectionDB from "./DB/connectionDB";
 import  RedisService  from "./DB/redis.connection";
+import userRouter from "./modules/users/user.controller";
 
 const app = express();
 const port = PORT;
@@ -34,6 +35,7 @@ export const bootstrap = async () => {
     })
 
     app.use("/auth", authRouter)
+    app.use("/user", userRouter)
 
     app.use("/*demo", (req: Request, res: Response, next: NextFunction) => {
         throw new AppError(`Url:${req.originalUrl} with method:${req.method} not found`, 404)

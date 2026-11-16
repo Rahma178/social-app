@@ -13,6 +13,7 @@ const globalErrorHandling_1 = require("./common/utilitis/globalErrorHandling");
 const auth_controller_1 = __importDefault(require("./modules/auth/auth.controller"));
 const connectionDB_1 = __importDefault(require("./DB/connectionDB"));
 const redis_connection_1 = __importDefault(require("./DB/redis.connection"));
+const user_controller_1 = __importDefault(require("./modules/users/user.controller"));
 const app = (0, express_1.default)();
 const port = config_service_1.PORT;
 const limiter = (0, express_rate_limit_1.rateLimit)({
@@ -31,6 +32,7 @@ const bootstrap = async () => {
         res.status(200).json({ message: "hello on my app" });
     });
     app.use("/auth", auth_controller_1.default);
+    app.use("/user", user_controller_1.default);
     app.use("/*demo", (req, res, next) => {
         throw new globalErrorHandling_1.AppError(`Url:${req.originalUrl} with method:${req.method} not found`, 404);
     });

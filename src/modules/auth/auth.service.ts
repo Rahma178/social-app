@@ -13,7 +13,8 @@ import { Encrypt } from '../../common/security/encrypt';
 import { compareSync } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
-import { ACCESS_TOKEN_SIGNATURE, REFRESH_TOKEN_SIGNATURE } from '../../config/config.service';
+import { ACCESS_TOKEN_SIGNATURE, AUDIANCE_GMAIL, REFRESH_TOKEN_SIGNATURE } from '../../config/config.service';
+import { OAuth2Client } from 'google-auth-library';
 
 class AuthService {
 
@@ -203,6 +204,128 @@ class AuthService {
     }
 
 
+
+    // ========================== Forget Password ==========================
+    forgetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        const { email } = req.body;
+
+        const user = await this._userRepo.findOne({ filter: { email: email.toLowerCase() } });
+        if (!user) {
+            throw new AppError("Email not found", 404);
+        }
+
+        const otp = generate_otp();
+        const hashOtp = await Hash(otp);
+
+        await RedisService.setValue({
+            key: `otp:forget:${email}`,
+            value: hashOtp,
+            ttl: 5 * 60
+        });
+
+        await sendEmail({
+            to: email,
+            subject: "Reset Password OTP",
+            html: `<h1>Your Reset Password OTP is: ${otp}</h1>`
+        });
+
+        success_response({
+            res,
+            statusCode: 200,
+            message: "OTP sent to your email successfully"
+        });
+    }
+
+
+    // ========================== Reset Password ==========================
+    resetPassword = async (req: Request, res: Response, next: NextFunction) => {
+        const { email, otp, newPassword } = req.body;
+
+        const cachedOtp = await RedisService.getValue(`otp:forget:${email}`);
+        if (!cachedOtp) {
+            throw new AppError("OTP has expired or invalid", 400);
+        }
+
+        if (!compareSync(otp, cachedOtp)) {
+            throw new AppError("Invalid OTP", 400);
+        }
+
+        const hashedPassword = await Hash(newPassword);
+
+        const user = await this._userRepo.findOneAndUpdate({
+            filter: { email: email.toLowerCase() },
+            update: { 
+                password: hashedPassword,
+                changeCredentialAt: new Date() 
+            }
+        });
+
+        if (!user) {
+            throw new AppError("User not found", 404);
+        }
+
+        await RedisService.deleteKey(`otp:forget:${email}`);
+
+        success_response({
+            res,
+            statusCode: 200,
+            message: "Password reset successfully, please sign in with your new password"
+        });
+    }
+
+
+
+    // ========================== Sign with Gmail ==========================
+    signUpWithGmail = async (req: Request, res: Response, next: NextFunction) => {
+        const { idToken } = req.body;
+        const client = new OAuth2Client();
+
+        const decoded = await client.verifyIdToken({
+            idToken,
+            audience: AUDIANCE_GMAIL,
+        });
+        
+        const payload = decoded.getPayload();
+        if (!payload || !payload.email) {
+            throw new AppError("Invalid Google Token", 400);
+        }
+
+        const { family_name, given_name, picture, email_verified, email } = payload;
+
+        let user = await this._userRepo.findOne({ filter: { email: email.toLowerCase() } });
+
+        if (!user) {
+            user = await this._userRepo.create({
+                fName: given_name,
+                lName: family_name || given_name,
+                email: email.toLowerCase(),
+                profileImage: picture,
+                isConfirmed: email_verified,
+                provider: "google"
+            } as Partial<IUser>);
+        }
+
+        const tokenId = randomUUID();
+
+        const access_token = jwt.sign(
+            { id: user._id, email: user.email },
+            ACCESS_TOKEN_SIGNATURE,
+            { expiresIn: "50m", jwtid: tokenId }
+        );
+
+        const refresh_token = jwt.sign(
+            { id: user._id, email: user.email },
+            REFRESH_TOKEN_SIGNATURE,
+            { expiresIn: "7d", jwtid: tokenId }
+        );
+
+        success_response({
+            res,
+            statusCode: 200,
+            message: "Signed in with Google successfully",
+            data: { tokens: { access_token, refresh_token } }
+        });
+    }
 
 
 

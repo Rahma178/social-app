@@ -14,4 +14,7 @@ authRouter.post("/confirm-email", (0, valodation_1.Validation)(auth_validation_1
 authRouter.post("/signIn", (0, valodation_1.Validation)(auth_validation_1.signInSchema), auth_service_1.default.signIn);
 authRouter.post("/refresh-token", (0, valodation_1.Validation)(auth_validation_1.refreshTokenSchema), auth_service_1.default.refreshToken);
 authRouter.post("/logout", authentication_1.authentication, auth_service_1.default.logout);
+authRouter.post("/forget-password", (0, valodation_1.Validation)(auth_validation_1.forgetPasswordSchema), auth_service_1.default.forgetPassword);
+authRouter.patch("/reset-password", (0, valodation_1.Validation)(auth_validation_1.resetPasswordSchema), auth_service_1.default.resetPassword);
+authRouter.post("/signin-google", (0, valodation_1.Validation)(auth_validation_1.googleSignInSchema), auth_service_1.default.signUpWithGmail);
 exports.default = authRouter;

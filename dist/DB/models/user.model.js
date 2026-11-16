@@ -5,8 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_enum_1 = require("../../common/enum/user.enum");
-const send_email_1 = __importDefault(require("../../common/service/send.email"));
-const bcrypt_1 = require("bcrypt");
 const userSchema = new mongoose_1.default.Schema({
     fName: { type: String, trim: true, minLength: 3, maxLength: 20, required: true },
     lName: { type: String, trim: true, minLength: 3, maxLength: 20, required: true },
@@ -21,23 +19,23 @@ const userSchema = new mongoose_1.default.Schema({
     timestamps: true,
     strictQuery: true
 });
-userSchema.pre("validate", async function () {
-    console.log("==============pre validate hook==============");
-    console.log(this);
-});
-userSchema.pre("save", async function () {
-    console.log("============== pre save hook==============");
-    console.log(this);
-    this.password = (0, bcrypt_1.hashSync)(this.password, 12);
-});
-userSchema.post("save", async function () {
-    console.log("==============post save hook==============");
-    console.log(this);
-    await (0, send_email_1.default)({ to: this.email, subject: "confirm email" });
-});
-userSchema.post("validate", async function () {
-    console.log("============== post validate hook==============");
-    console.log(this);
-});
+// userSchema.pre("validate", async function () {
+//     console.log("==============pre validate hook==============");
+//     console.log(this);
+// })
+// userSchema.pre("save", async function () {
+//     console.log("============== pre save hook==============");
+//     console.log(this);
+//     this.password = hashSync(this.password, 12);
+// })
+// userSchema.post("save", async function () {
+//     console.log("==============post save hook==============");
+//     console.log(this);
+//     await sendEmail({ to: this.email, subject: "confirm email" });
+// })
+// userSchema.post("validate", async function () {
+//     console.log("============== post validate hook==============");
+//     console.log(this);
+// })
 const userModel = mongoose_1.default.models.User || mongoose_1.default.model("User", userSchema);
 exports.default = userModel;

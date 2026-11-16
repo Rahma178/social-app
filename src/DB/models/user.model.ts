@@ -15,7 +15,8 @@ export interface IUser {
   isConfirmed?: boolean,
   phone?: string,
   profileImage?: string,
-  changeCredentialAt?: Date;
+  changeCredentialAt?: Date,
+  isPrivate: { type: Boolean, default: false }
 }
 
 
@@ -35,27 +36,27 @@ const userSchema = new mongoose.Schema<IUser>({
 })
 
 
-userSchema.pre("validate", async function () {
-    console.log("==============pre validate hook==============");
-    console.log(this);
-})
+// userSchema.pre("validate", async function () {
+//     console.log("==============pre validate hook==============");
+//     console.log(this);
+// })
 
-userSchema.pre("save", async function () {
-    console.log("============== pre save hook==============");
-    console.log(this);
-    this.password = hashSync(this.password, 12);
-})
+// userSchema.pre("save", async function () {
+//     console.log("============== pre save hook==============");
+//     console.log(this);
+//     this.password = hashSync(this.password, 12);
+// })
 
-userSchema.post("save", async function () {
-    console.log("==============post save hook==============");
-    console.log(this);
-    await sendEmail({ to: this.email, subject: "confirm email" });
-})
+// userSchema.post("save", async function () {
+//     console.log("==============post save hook==============");
+//     console.log(this);
+//     await sendEmail({ to: this.email, subject: "confirm email" });
+// })
 
-userSchema.post("validate", async function () {
-    console.log("============== post validate hook==============");
-    console.log(this);
-})
+// userSchema.post("validate", async function () {
+//     console.log("============== post validate hook==============");
+//     console.log(this);
+// })
 
 
 const userModel = mongoose.models.User || mongoose.model<IUser>("User", userSchema)

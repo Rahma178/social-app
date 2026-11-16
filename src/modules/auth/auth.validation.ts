@@ -50,3 +50,27 @@ export const refreshTokenSchema = {
     refreshToken: z.string({ message: "Refresh token is required" })
   })
 };
+
+
+export const forgetPasswordSchema = {
+  body: z.object({
+    email: z.string().email("Invalid email format")
+  })
+};
+
+
+export const resetPasswordSchema = {
+  body: z.object({
+    email: z.string().email("Invalid email format"),
+    otp: z.string().min(6, "OTP must be at least 6 digits"),
+    newPassword: z.string().min(6, "Password must be at least 6 characters")
+  })
+};
+
+
+
+export const googleSignInSchema = {
+  body: z.object({
+    idToken: z.string().min(1, "Google ID Token is required")
+  })
+}

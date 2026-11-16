@@ -18,3 +18,4 @@ export const PASSWORD = process.env.PASSWORD!;
 export const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY!;
 export const ACCESS_TOKEN_SIGNATURE = process.env.ACCESS_TOKEN_SIGNATURE!;
 export const REFRESH_TOKEN_SIGNATURE = process.env.REFRESH_TOKEN_SIGNATURE!;
+export const AUDIANCE_GMAIL = process.env.AUDIANCE_GMAIL!;

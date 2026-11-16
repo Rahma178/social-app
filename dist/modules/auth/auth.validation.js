@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.refreshTokenSchema = exports.signInSchema = exports.confirmEmailSchema = exports.signUpSchema = void 0;
+exports.googleSignInSchema = exports.resetPasswordSchema = exports.forgetPasswordSchema = exports.refreshTokenSchema = exports.signInSchema = exports.confirmEmailSchema = exports.signUpSchema = void 0;
 const z = __importStar(require("zod"));
 const user_enum_1 = require("../../common/enum/user.enum");
 exports.signUpSchema = {
@@ -77,5 +77,22 @@ exports.signInSchema = ({
 exports.refreshTokenSchema = {
     body: z.object({
         refreshToken: z.string({ message: "Refresh token is required" })
+    })
+};
+exports.forgetPasswordSchema = {
+    body: z.object({
+        email: z.string().email("Invalid email format")
+    })
+};
+exports.resetPasswordSchema = {
+    body: z.object({
+        email: z.string().email("Invalid email format"),
+        otp: z.string().min(6, "OTP must be at least 6 digits"),
+        newPassword: z.string().min(6, "Password must be at least 6 characters")
+    })
+};
+exports.googleSignInSchema = {
+    body: z.object({
+        idToken: z.string().min(1, "Google ID Token is required")
     })
 };
