@@ -8,6 +8,8 @@ const auth_service_1 = __importDefault(require("./auth.service"));
 const express_1 = require("express");
 const auth_validation_1 = require("./auth.validation");
 const authentication_1 = require("../../common/middleware/authentication");
+const multer_cloud_1 = __importDefault(require("../../common/middleware/multer.cloud"));
+const multer_enum_1 = require("../../common/enum/multer.enum");
 const authRouter = (0, express_1.Router)();
 authRouter.post("/signup", (0, valodation_1.Validation)(auth_validation_1.signUpSchema), auth_service_1.default.signUp);
 authRouter.post("/confirm-email", (0, valodation_1.Validation)(auth_validation_1.confirmEmailSchema), auth_service_1.default.confirmEmail);
@@ -17,4 +19,5 @@ authRouter.post("/logout", authentication_1.authentication, auth_service_1.defau
 authRouter.post("/forget-password", (0, valodation_1.Validation)(auth_validation_1.forgetPasswordSchema), auth_service_1.default.forgetPassword);
 authRouter.patch("/reset-password", (0, valodation_1.Validation)(auth_validation_1.resetPasswordSchema), auth_service_1.default.resetPassword);
 authRouter.post("/signin-google", (0, valodation_1.Validation)(auth_validation_1.googleSignInSchema), auth_service_1.default.signUpWithGmail);
+authRouter.post("/test", (0, multer_cloud_1.default)({ store_type: multer_enum_1.StoreEnum.disk }).array("attachments"), auth_service_1.default.test);
 exports.default = authRouter;

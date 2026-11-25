@@ -1,10 +1,11 @@
-export enum MulterEnum {
-  images = "image",
-  videos = "video",
-  files = "file"
+export enum StoreEnum {
+  disk = "disk",
+  memory = "memory"
 }
 
-export enum StoreEnum {
-  memory = "memory",
-  disk = "disk"
+export const MulterEnum = {
+  image: ["image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp"],
+  video: ["video/mp4", "video/mpeg", "video/quicktime", "video/x-msvideo", "video/x-ms-wmv"],
+  audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp4", "audio/webm"],
+  pdf: ["application/pdf"],
 }

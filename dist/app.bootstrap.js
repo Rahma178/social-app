@@ -14,6 +14,9 @@ const auth_controller_1 = __importDefault(require("./modules/auth/auth.controlle
 const connectionDB_1 = __importDefault(require("./DB/connectionDB"));
 const redis_connection_1 = __importDefault(require("./DB/redis.connection"));
 const user_controller_1 = __importDefault(require("./modules/users/user.controller"));
+const success_res_middleware_1 = require("./common/middleware/success.res.middleware");
+const s3_service_1 = require("./common/service/s3.service");
+const promises_1 = require("stream/promises");
 const app = (0, express_1.default)();
 const port = config_service_1.PORT;
 const limiter = (0, express_rate_limit_1.rateLimit)({
@@ -31,11 +34,26 @@ const bootstrap = async () => {
     app.get('/', (req, res, next) => {
         res.status(200).json({ message: "hello on my app" });
     });
+    // app.use(success_response);
     app.use("/auth", auth_controller_1.default);
     app.use("/user", user_controller_1.default);
+    app.get("/upload/*path", async (req, res, next) => {
+        const { path } = req.params;
+        const Key = path.join("/");
+        const { download } = req.query;
+        const result = await new s3_service_1.S3Service().getFile(Key);
+        const stream = result.Body;
+        res.setHeader("Content-type", result.ContentType);
+        res.setHeader("cross-origin-resource-policy", "cross-origin");
+        if (download && download == "true") {
+            res.setHeader("Content-Disposition", `attachment; filename="${path.pop()}"`);
+        }
+        (0, promises_1.pipeline)(stream, res);
+    });
     app.use("/*demo", (req, res, next) => {
         throw new globalErrorHandling_1.AppError(`Url:${req.originalUrl} with method:${req.method} not found`, 404);
     });
+    app.use(success_res_middleware_1.default_success);
     app.use(globalErrorHandling_1.GlobalErrorHandling);
     app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 };

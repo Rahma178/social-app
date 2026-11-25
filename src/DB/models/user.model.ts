@@ -1,4 +1,4 @@
-import mongoose,{mongo} from "mongoose";
+import mongoose,{HydratedDocument, mongo} from "mongoose";
 import { GenderEnum, RoleEnum } from "../../common/enum/user.enum";
 import sendEmail from "../../common/service/send.email";
 import { hashSync } from "bcrypt";
@@ -34,6 +34,18 @@ const userSchema = new mongoose.Schema<IUser>({
   timestamps: true,
   strictQuery: true
 })
+
+
+userSchema.post("save", async function () {
+    console.log("========== post save hook==========");
+    const that = this as HydratedDocument<IUser & { is_new: Boolean }>
+    console.log(that.is_new);//false
+
+    if (that.is_new) {
+        await sendEmail({ to: this.email, subject: "sss" })
+    }
+})
+
 
 
 // userSchema.pre("validate", async function () {

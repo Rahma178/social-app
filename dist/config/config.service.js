@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AUDIANCE_GMAIL = exports.REFRESH_TOKEN_SIGNATURE = exports.ACCESS_TOKEN_SIGNATURE = exports.ENCRYPTION_KEY = exports.PASSWORD = exports.EMAIL = exports.REDIS_URL = exports.DB_URI = exports.PORT = void 0;
+exports.AWS_SECRET_ACCESS_KEY = exports.AWS_SECRET_KEY = exports.AWS_BUCKET_NAME = exports.AWS_REGION = exports.AUDIANCE_GMAIL = exports.REFRESH_TOKEN_SIGNATURE = exports.ACCESS_TOKEN_SIGNATURE = exports.ENCRYPTION_KEY = exports.PASSWORD = exports.EMAIL = exports.REDIS_URL = exports.DB_URI = exports.PORT = void 0;
 const dotenv_1 = require("dotenv");
 const node_path_1 = require("node:path");
 const NODE_ENV = process.env.NODE_ENV;
@@ -18,3 +18,7 @@ exports.ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 exports.ACCESS_TOKEN_SIGNATURE = process.env.ACCESS_TOKEN_SIGNATURE;
 exports.REFRESH_TOKEN_SIGNATURE = process.env.REFRESH_TOKEN_SIGNATURE;
 exports.AUDIANCE_GMAIL = process.env.AUDIANCE_GMAIL;
+exports.AWS_REGION = process.env.AWS_REGION;
+exports.AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME;
+exports.AWS_SECRET_KEY = process.env.AWS_SECRET_KEY;
+exports.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;

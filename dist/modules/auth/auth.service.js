@@ -48,8 +48,10 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const node_crypto_1 = require("node:crypto");
 const config_service_1 = require("../../config/config.service");
 const google_auth_library_1 = require("google-auth-library");
+const s3_service_1 = require("../../common/service/s3.service");
 class AuthService {
     _userRepo = new user_repository_1.UserRepository;
+    s3Service = new s3_service_1.S3Service;
     constructor() { }
     // =================== SignUp ========================
     signUp = async (req, res, next) => {
@@ -271,6 +273,22 @@ class AuthService {
             statusCode: 200,
             message: "Signed in with Google successfully",
             data: { tokens: { access_token, refresh_token } }
+        });
+        // res.success({ statusCode: 201, message: "User created", data: user });
+    };
+    test = async (req, res, next) => {
+        console.log("TEST HIT", req.files);
+        const Key = await this.s3Service.uploadFiles({
+            // files: req.files!,
+            files: req.files,
+            path: "users"
+        });
+        // res.status(201).json({ message: "done", key });
+        return (0, success_responce_1.success_response)({
+            res,
+            statusCode: 201,
+            message: "done",
+            data: { k: Key }
         });
     };
 }

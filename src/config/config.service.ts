@@ -19,3 +19,8 @@ export const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY!;
 export const ACCESS_TOKEN_SIGNATURE = process.env.ACCESS_TOKEN_SIGNATURE!;
 export const REFRESH_TOKEN_SIGNATURE = process.env.REFRESH_TOKEN_SIGNATURE!;
 export const AUDIANCE_GMAIL = process.env.AUDIANCE_GMAIL!;
+
+export const AWS_REGION = process.env.AWS_REGION!;
+export const AWS_BUCKET_NAME = process.env.AWS_BUCKET_NAME!;
+export const AWS_SECRET_KEY = process.env.AWS_SECRET_KEY!;
+export const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY!;

@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const user_enum_1 = require("../../common/enum/user.enum");
+const send_email_1 = __importDefault(require("../../common/service/send.email"));
 const userSchema = new mongoose_1.default.Schema({
     fName: { type: String, trim: true, minLength: 3, maxLength: 20, required: true },
     lName: { type: String, trim: true, minLength: 3, maxLength: 20, required: true },
@@ -18,6 +19,14 @@ const userSchema = new mongoose_1.default.Schema({
 }, {
     timestamps: true,
     strictQuery: true
+});
+userSchema.post("save", async function () {
+    console.log("========== post save hook==========");
+    const that = this;
+    console.log(that.is_new); //false
+    if (that.is_new) {
+        await (0, send_email_1.default)({ to: this.email, subject: "sss" });
+    }
 });
 // userSchema.pre("validate", async function () {
 //     console.log("==============pre validate hook==============");

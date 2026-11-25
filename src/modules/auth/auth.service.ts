@@ -15,10 +15,12 @@ import jwt from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
 import { ACCESS_TOKEN_SIGNATURE, AUDIANCE_GMAIL, REFRESH_TOKEN_SIGNATURE } from '../../config/config.service';
 import { OAuth2Client } from 'google-auth-library';
+import { S3Service } from '../../common/service/s3.service';
 
 class AuthService {
 
     private readonly _userRepo = new UserRepository;
+    private readonly s3Service = new S3Service;
 
     constructor() {}
 
@@ -325,11 +327,31 @@ class AuthService {
             message: "Signed in with Google successfully",
             data: { tokens: { access_token, refresh_token } }
         });
+// res.success({ statusCode: 201, message: "User created", data: user });
+
     }
 
 
 
 
+
+    test = async (req: Request, res: Response, next: NextFunction) => {
+            console.log("TEST HIT", req.files);
+
+        const Key = await this.s3Service.uploadFiles({
+            // files: req.files!,
+            files: req.files as Express.Multer.File[],
+            path: "users"
+        });
+
+        // res.status(201).json({ message: "done", key });
+        return success_response({
+            res,
+            statusCode: 201,
+            message: "done",
+            data: { k: Key }
+        });
+    }
 
 
 
